@@ -22,7 +22,7 @@ def simulate(
     """
     ftq_nav = ftq_nav.loc[ftq_nav.index >= start_date]
     if ftq_nav.empty:
-        raise ValueError("No FTQ NAV data available on/after the selected start date.")
+        raise ValueError("Aucune donnée FTQ disponible à la date d'investissement sélectionnée ou après.")
 
     ftq_start_value = ftq_nav.iloc[0]
     sp500_start_value = value_at_or_before(sp500_series, start_date)

@@ -11,36 +11,38 @@ st.set_page_config(page_title="FTQ vs S&P 500", layout="wide")
 
 st.title("FTQ vs S&P 500")
 st.caption(
-    "Compares a lump-sum investment in the Fonds de solidarité FTQ (whose 30% first-year tax "
-    "credit is reinvested in the S&P 500) against investing the same amount directly in the S&P 500."
+    "Compare un placement forfaitaire dans le Fonds de solidarité FTQ (dont le crédit d'impôt de "
+    "la première année de 30 % est réinvesti dans le S&P 500) à un placement équivalent investi "
+    "directement dans le S&P 500."
 )
 st.info(
-    "FTQ annual returns (1985-2026) are the officially reported figures from fondsftq.com's "
-    "'Historique de la valeur de l'action' table; 2017-2026 are additionally refreshed live "
-    "from fondsftq.com when reachable. See data/ftq_annual_returns.csv."
+    "Les rendements annuels du Fonds FTQ (1985-2026) sont les chiffres officiellement publiés dans "
+    "le tableau « Historique de la valeur de l'action » de fondsftq.com; les rendements 2017-2026 "
+    "sont également rafraîchis en direct depuis fondsftq.com lorsque le site est accessible. Voir "
+    "data/ftq_annual_returns.csv."
 )
-with st.expander("Reference document: official FTQ historical value/return chart"):
+with st.expander("Document de référence : historique officiel de la valeur de l'action FTQ"):
     st.image(
         "Documentation/ftq-historique-valeur-action-20260531.png",
-        caption="Source: fondsftq.com",
+        caption="Source : fondsftq.com",
     )
     st.markdown(
-        "[Original source](https://www.fondsftq.com/-/media/EspaceEpargnant/Images/Contenu/"
+        "[Source originale](https://www.fondsftq.com/-/media/EspaceEpargnant/Images/Contenu/"
         "rendement-fonds-ftq/rendements-annuels-20260531.png)"
     )
-with st.expander("Méthodologie détaillée (français)"):
+with st.expander("Méthodologie détaillée"):
     st.markdown(Path("Documentation/methodologie.md").read_text(encoding="utf-8"))
 
 with st.sidebar:
-    st.header("Inputs")
-    investment_amount = st.number_input("Initial investment ($)", min_value=1.0, value=1000.0, step=100.0)
+    st.header("Paramètres")
+    investment_amount = st.number_input("Investissement initial ($)", min_value=1.0, value=1000.0, step=100.0)
     start_date = st.date_input(
-        "Investment date",
+        "Date d'investissement",
         value=INCEPTION_DATE.date(),
         min_value=INCEPTION_DATE.date(),
         max_value=pd.Timestamp.today().date(),
     )
-    tax_credit_rate = st.slider("First-year tax credit reinvested in S&P 500 (%)", 0, 100, 30) / 100
+    tax_credit_rate = st.slider("Crédit d'impôt de la première année réinvesti dans le S&P 500 (%)", 0, 100, 30) / 100
 
 
 @st.cache_data(ttl=24 * 3600)
@@ -67,33 +69,33 @@ summary = summarize(result, investment_amount)
 
 col1, col2, col3 = st.columns(3)
 col1.metric(
-    "FTQ + tax refund in S&P 500",
+    "FTQ + remboursement d'impôt en S&P 500",
     f"${summary['ftq_total_final']:,.0f}",
-    f"{summary['ftq_total_cagr']:.2%} CAGR",
+    f"{summary['ftq_total_cagr']:.2%} TCAC",
 )
 col2.metric(
     "S&P 500 direct",
     f"${summary['sp500_direct_final']:,.0f}",
-    f"{summary['sp500_direct_cagr']:.2%} CAGR",
+    f"{summary['sp500_direct_cagr']:.2%} TCAC",
 )
 delta = summary["ftq_total_final"] - summary["sp500_direct_final"]
 col3.metric(
-    "Difference",
+    "Différence",
     f"${delta:,.0f}",
-    f"over {summary['years']:.1f} years",
+    f"sur {summary['years']:.1f} ans",
 )
 
 fig = go.Figure()
-fig.add_trace(go.Scatter(x=result.index, y=result["ftq_total_value"], name="FTQ + tax refund in S&P 500"))
+fig.add_trace(go.Scatter(x=result.index, y=result["ftq_total_value"], name="FTQ + remboursement d'impôt en S&P 500"))
 fig.add_trace(go.Scatter(x=result.index, y=result["sp500_direct_value"], name="S&P 500 direct"))
-fig.add_trace(go.Scatter(x=result.index, y=result["ftq_value"], name="FTQ alone", line=dict(dash="dot")))
+fig.add_trace(go.Scatter(x=result.index, y=result["ftq_value"], name="FTQ seul", line=dict(dash="dot")))
 fig.add_trace(
-    go.Scatter(x=result.index, y=result["tax_refund_sp500_value"], name="Tax refund in S&P 500 alone", line=dict(dash="dot"))
+    go.Scatter(x=result.index, y=result["tax_refund_sp500_value"], name="Remboursement d'impôt en S&P 500 seul", line=dict(dash="dot"))
 )
-fig.update_layout(yaxis_title="Value ($)", xaxis_title="Date", legend=dict(orientation="h", y=-0.2))
+fig.update_layout(yaxis_title="Valeur ($)", xaxis_title="Date", legend=dict(orientation="h", y=-0.2))
 st.plotly_chart(fig, width="stretch")
 
-with st.expander("Raw data"):
+with st.expander("Données brutes"):
     display_df = result.copy()
     display_df["delta"] = (display_df["ftq_total_value"] - display_df["sp500_direct_value"]) / investment_amount * 100
     display_df["ftq_total_yoy_growth_pct"] = (display_df["ftq_total_value"] / investment_amount - 1) * 100
@@ -102,4 +104,4 @@ with st.expander("Raw data"):
     display_df = display_df.round(2)
     display_df.index = display_df.index.date
     st.dataframe(display_df, width="stretch")
-    st.download_button("Download CSV", display_df.to_csv().encode(), "ftq_vs_sp500.csv", "text/csv")
+    st.download_button("Télécharger le CSV", display_df.to_csv().encode(), "ftq_vs_sp500.csv", "text/csv")
