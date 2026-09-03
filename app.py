@@ -1,6 +1,7 @@
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from pathlib import Path
 
 from ftq_data import INCEPTION_DATE, build_ftq_nav_series
 from simulate import simulate, summarize
@@ -27,7 +28,8 @@ with st.expander("Reference document: official FTQ historical value/return chart
         "[Original source](https://www.fondsftq.com/-/media/EspaceEpargnant/Images/Contenu/"
         "rendement-fonds-ftq/rendements-annuels-20260531.png)"
     )
-st.caption("Méthodologie détaillée (français) : [Documentation/methodologie.md](Documentation/methodologie.md)")
+with st.expander("Méthodologie détaillée (français)"):
+    st.markdown(Path("Documentation/methodologie.md").read_text(encoding="utf-8"))
 
 with st.sidebar:
     st.header("Inputs")
