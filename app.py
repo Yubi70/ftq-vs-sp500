@@ -27,6 +27,7 @@ with st.expander("Reference document: official FTQ historical value/return chart
         "[Original source](https://www.fondsftq.com/-/media/EspaceEpargnant/Images/Contenu/"
         "rendement-fonds-ftq/rendements-annuels-20260531.png)"
     )
+st.caption("Méthodologie détaillée (français) : [Documentation/methodologie.md](Documentation/methodologie.md)")
 
 with st.sidebar:
     st.header("Inputs")
