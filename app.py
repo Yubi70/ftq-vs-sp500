@@ -94,6 +94,8 @@ with st.expander("Raw data"):
     display_df = result.copy()
     display_df["delta"] = (display_df["ftq_total_value"] - display_df["sp500_direct_value"]) / investment_amount * 100
     display_df["ftq_total_yoy_growth_pct"] = (display_df["ftq_total_value"] / investment_amount - 1) * 100
+    display_df["rendement_ftq_pct"] = display_df["ftq_value"].pct_change() * 100
+    display_df["rendement_sp500_pct"] = display_df["sp500_direct_value"].pct_change() * 100
     display_df = display_df.round(2)
     display_df.index = display_df.index.date
     st.dataframe(display_df, width="stretch")
