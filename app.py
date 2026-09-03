@@ -21,18 +21,6 @@ st.info(
     "sont également rafraîchis en direct depuis fondsftq.com lorsque le site est accessible. Voir "
     "data/ftq_annual_returns.csv."
 )
-with st.expander("Document de référence : historique officiel de la valeur de l'action FTQ"):
-    st.image(
-        "Documentation/ftq-historique-valeur-action-20260531.png",
-        caption="Source : fondsftq.com",
-    )
-    st.markdown(
-        "[Source originale](https://www.fondsftq.com/-/media/EspaceEpargnant/Images/Contenu/"
-        "rendement-fonds-ftq/rendements-annuels-20260531.png)"
-    )
-with st.expander("Méthodologie détaillée"):
-    st.markdown(Path("Documentation/methodologie.md").read_text(encoding="utf-8"))
-
 with st.sidebar:
     st.header("Paramètres")
     investment_amount = st.number_input("Investissement initial ($)", min_value=1.0, value=1000.0, step=100.0)
@@ -122,3 +110,15 @@ with st.expander("Données brutes"):
     display_df.index = display_df.index.date
     st.dataframe(display_df, width="stretch")
     st.download_button("Télécharger le CSV", display_df.to_csv().encode(), "ftq_vs_sp500.csv", "text/csv")
+
+with st.expander("Document de référence : historique officiel de la valeur de l'action FTQ"):
+    st.image(
+        "Documentation/ftq-historique-valeur-action-20260531.png",
+        caption="Source : fondsftq.com",
+    )
+    st.markdown(
+        "[Source originale](https://www.fondsftq.com/-/media/EspaceEpargnant/Images/Contenu/"
+        "rendement-fonds-ftq/rendements-annuels-20260531.png)"
+    )
+with st.expander("Méthodologie détaillée"):
+    st.markdown(Path("Documentation/methodologie.md").read_text(encoding="utf-8"))
