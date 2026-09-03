@@ -33,7 +33,7 @@ with st.sidebar:
     investment_amount = st.number_input("Initial investment ($)", min_value=1.0, value=1000.0, step=100.0)
     start_date = st.date_input(
         "Investment date",
-        value=pd.Timestamp("1985-05-31").date(),
+        value=INCEPTION_DATE.date(),
         min_value=INCEPTION_DATE.date(),
         max_value=pd.Timestamp.today().date(),
     )
