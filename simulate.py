@@ -40,6 +40,19 @@ def simulate(
     df["tax_refund_sp500_value"] = sp500_units_from_refund * sp500_at_dates
     df["ftq_total_value"] = df["ftq_value"] + df["tax_refund_sp500_value"]
     df["sp500_direct_value"] = sp500_units_direct * sp500_at_dates
+
+    if start_date not in df.index:
+        # anchor row showing the day-0 position (before any growth) for a clean starting point on the chart/table
+        day_zero = pd.DataFrame(
+            {
+                "ftq_value": [investment_amount],
+                "tax_refund_sp500_value": [tax_refund_amount],
+                "ftq_total_value": [investment_amount + tax_refund_amount],
+                "sp500_direct_value": [investment_amount],
+            },
+            index=[start_date],
+        )
+        df = pd.concat([day_zero, df]).sort_index()
     return df
 
 
