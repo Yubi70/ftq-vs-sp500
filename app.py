@@ -18,6 +18,15 @@ st.info(
     "'Historique de la valeur de l'action' table; 2017-2026 are additionally refreshed live "
     "from fondsftq.com when reachable. See data/ftq_annual_returns.csv."
 )
+with st.expander("Reference document: official FTQ historical value/return chart"):
+    st.image(
+        "Documentation/ftq-historique-valeur-action-20260531.png",
+        caption="Source: fondsftq.com",
+    )
+    st.markdown(
+        "[Original source](https://www.fondsftq.com/-/media/EspaceEpargnant/Images/Contenu/"
+        "rendement-fonds-ftq/rendements-annuels-20260531.png)"
+    )
 
 with st.sidebar:
     st.header("Inputs")
