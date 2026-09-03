@@ -36,12 +36,29 @@ with st.expander("Méthodologie détaillée"):
 with st.sidebar:
     st.header("Paramètres")
     investment_amount = st.number_input("Investissement initial ($)", min_value=1.0, value=1000.0, step=100.0)
-    start_date = st.date_input(
-        "Date d'investissement",
-        value=INCEPTION_DATE.date(),
-        min_value=INCEPTION_DATE.date(),
-        max_value=pd.Timestamp.today().date(),
+
+    horizon_choice = st.radio(
+        "Date initiale investissement",
+        ["Maximum", "5 dernières années", "10 dernières années", "20 dernières années", "30 dernières années", "Personnalisée"],
     )
+    today = pd.Timestamp.today()
+    horizon_to_start = {
+        "Maximum": INCEPTION_DATE,
+        "5 dernières années": today - pd.DateOffset(years=5),
+        "10 dernières années": today - pd.DateOffset(years=10),
+        "20 dernières années": today - pd.DateOffset(years=20),
+        "30 dernières années": today - pd.DateOffset(years=30),
+    }
+    if horizon_choice == "Personnalisée":
+        start_date = st.date_input(
+            "Date personnalisée",
+            value=INCEPTION_DATE.date(),
+            min_value=INCEPTION_DATE.date(),
+            max_value=today.date(),
+        )
+    else:
+        start_date = max(horizon_to_start[horizon_choice], INCEPTION_DATE).date()
+
     tax_credit_rate = st.slider("Crédit d'impôt de la première année réinvesti dans le S&P 500 (%)", 0, 100, 30) / 100
 
 
