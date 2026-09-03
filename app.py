@@ -25,13 +25,14 @@ with st.sidebar:
     st.header("Paramètres")
     investment_amount = st.number_input("Investissement initial ($)", min_value=1.0, value=1000.0, step=100.0)
 
+    max_option = f"Maximum (depuis {INCEPTION_DATE.date().isoformat()})"
     horizon_choice = st.radio(
         "Date initiale investissement",
-        ["Maximum", "5 dernières années", "10 dernières années", "20 dernières années", "30 dernières années", "Personnalisée"],
+        [max_option, "5 dernières années", "10 dernières années", "20 dernières années", "30 dernières années", "Personnalisée"],
     )
     today = pd.Timestamp.today()
     horizon_to_start = {
-        "Maximum": INCEPTION_DATE,
+        max_option: INCEPTION_DATE,
         "5 dernières années": today - pd.DateOffset(years=5),
         "10 dernières années": today - pd.DateOffset(years=10),
         "20 dernières années": today - pd.DateOffset(years=20),
