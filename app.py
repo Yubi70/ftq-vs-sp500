@@ -14,8 +14,8 @@ st.caption(
     "credit is reinvested in the S&P 500) against investing the same amount directly in the S&P 500."
 )
 st.info(
-    "FTQ annual returns for 1985-2016 are an estimated flat CAGR (not officially reported figures) "
-    "anchored on the $10 (1984) IPO price; 2017-2026 are officially reported returns, refreshed live "
+    "FTQ annual returns (1985-2026) are the officially reported figures from fondsftq.com's "
+    "'Historique de la valeur de l'action' table; 2017-2026 are additionally refreshed live "
     "from fondsftq.com when reachable. See data/ftq_annual_returns.csv."
 )
 
@@ -24,7 +24,7 @@ with st.sidebar:
     investment_amount = st.number_input("Initial investment ($)", min_value=1.0, value=1000.0, step=100.0)
     start_date = st.date_input(
         "Investment date",
-        value=INCEPTION_DATE.date(),
+        value=pd.Timestamp("1985-05-31").date(),
         min_value=INCEPTION_DATE.date(),
         max_value=pd.Timestamp.today().date(),
     )
@@ -79,8 +79,13 @@ fig.add_trace(
     go.Scatter(x=result.index, y=result["tax_refund_sp500_value"], name="Tax refund in S&P 500 alone", line=dict(dash="dot"))
 )
 fig.update_layout(yaxis_title="Value ($)", xaxis_title="Date", legend=dict(orientation="h", y=-0.2))
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width="stretch")
 
 with st.expander("Raw data"):
-    st.dataframe(result)
-    st.download_button("Download CSV", result.to_csv().encode(), "ftq_vs_sp500.csv", "text/csv")
+    display_df = result.copy()
+    display_df["delta"] = (display_df["ftq_total_value"] - display_df["sp500_direct_value"]) / investment_amount * 100
+    display_df["ftq_total_yoy_growth_pct"] = (display_df["ftq_total_value"] / investment_amount - 1) * 100
+    display_df = display_df.round(2)
+    display_df.index = display_df.index.date
+    st.dataframe(display_df, width="stretch")
+    st.download_button("Download CSV", display_df.to_csv().encode(), "ftq_vs_sp500.csv", "text/csv")

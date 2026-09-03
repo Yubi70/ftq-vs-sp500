@@ -1,10 +1,9 @@
 """FTQ share NAV series builder.
 
-1985-2016 returns are a flat estimated CAGR (3.9643%) anchored on the $10 (1984) IPO price
-and the FYE2016 value implied by working backward from the officially reported 2022 share
-value ($52.61) using the known 2017-2022 returns (see data/ftq_annual_returns.csv,
-source=estimated_flat_cagr). 2017-2026 returns are the officially reported annual returns
-(source=reported), refreshed at runtime from fondsftq.com when possible.
+All annual returns (1985-2026) are officially reported figures, transcribed from the
+Fonds de solidarité FTQ "Historique de la valeur de l'action" table (fiscal year-end dates
+shifted from October to June in 1996, then to May in 2004 - see data/ftq_annual_returns.csv).
+2017-2026 are additionally refreshed at runtime from fondsftq.com when possible.
 """
 import re
 from pathlib import Path
@@ -14,7 +13,7 @@ import requests
 
 CSV_PATH = Path(__file__).parent / "data" / "ftq_annual_returns.csv"
 RETURNS_PAGE_URL = "https://www.fondsftq.com/en/personal/fonds-ftq-flexifonds-return-shares/fonds-ftq-return"
-INCEPTION_DATE = pd.Timestamp("1984-01-01")
+INCEPTION_DATE = pd.Timestamp("1984-10-31")
 INCEPTION_SHARE_VALUE = 10.0
 
 # Matches "As at May 31, 2026, ... annual return ... is 8.6%" (and prior years in the same sentence).
