@@ -11,7 +11,10 @@ def simulate(
     sp500_series: pd.Series,
     tax_credit_rate: float = 0.30,
 ) -> pd.DataFrame:
-    """Build a comparison DataFrame indexed by FTQ's fiscal-year-end dates from start_date to today.
+    """Build a comparison DataFrame indexed by FTQ's fiscal-year-end dates.
+
+    Calculations ONLY go up to the last known FTQ return date (e.g., May 31, 2026).
+    No projections or extrapolations beyond the last FTQ NAV date.
 
     Columns:
         ftq_value              -- investment_amount compounded on the FTQ NAV series
